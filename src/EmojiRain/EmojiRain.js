@@ -46,7 +46,6 @@ class EmojiRain extends React.Component {
     for (let i = 0; i < props.maxDrops; i++) {
       drops.push({
         emoji: getRandomEmoji(),
-        skipTransition: false,
         position: {
           x: Math.random() * window.innerWidth,
           y: EmojiRain.getRandomNegativeInnerHeight(),

@@ -2,7 +2,7 @@ import React from 'react'
 
 const GithubStarButton = () => (
   <a
-    class="github-button"
+    className="github-button"
     href="https://github.com/dschu-lab/raining-emojis.surge.sh"
     data-size="large"
     data-show-count="true"

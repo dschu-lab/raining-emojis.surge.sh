@@ -1,4 +1,4 @@
-# [Raining Emojis](http://raining-emojis.surge.sh)
+# [Raining Emojis](http://raining-emojis.surge.sh) [![Build Status](https://travis-ci.org/dschu-lab/raining-emojis.surge.sh.svg?branch=master)](https://travis-ci.org/dschu-lab/raining-emojis.surge.sh)
 
 ![Raining Emojis Gif](/docs/raining-emojis.gif)
 
