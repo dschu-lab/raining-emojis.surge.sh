@@ -11,7 +11,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "postbuild": "echo raining-emojis.surge.sh >> ./build/CNAME && surge ./build"
   },
   "eslintConfig": {
     "extends": "react-app"
