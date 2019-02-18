@@ -4,16 +4,21 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "lodash": "^4.17.11",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
-    "react-scripts": "2.1.5"
+    "react-helmet": "^5.2.0",
+    "react-scripts": "2.1.5",
+    "runes": "^0.4.3"
   },
   "scripts": {
     "deploy:surge": "surge ./build raining-emojis.surge.sh",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "preversion": "[[ -z $(git status --porcelain) ]] && npm run test",
+    "postversion": "git push && git push --tags"
   },
   "eslintConfig": {
     "extends": "react-app"

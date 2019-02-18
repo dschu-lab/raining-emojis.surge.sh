@@ -1,98 +1,145 @@
 import React from 'react'
+import Helmet from 'react-helmet'
+import { substr } from 'runes'
+import { throttle } from 'lodash'
 import './EmojiRain.css'
-import Footer from '../Footer'
-import Emojis from './Emojis'
-
-const getRandomEmoji = () => Emojis[Math.floor(Math.random() * Emojis.length)]
-
-const EmojiRainDrop = ({
-  emoji,
-  minFontSize = 40,
-  maxFontSize = 100,
-  position,
-}) => {
-  const [fontSize] = React.useState(
-    Math.max(minFontSize, Math.ceil(Math.random() * maxFontSize))
-  )
-
-  return (
-    <div
-      children={emoji}
-      style={{
-        transform: `translateX(${position.x}px) translateY(${position.y}px)`,
-        fontSize,
-      }}
-    />
-  )
-}
+import EmojiCanvas from './EmojiCanvas'
+import Settings from './Settings'
+import {
+  getRandomEmoji,
+  getRandomEmojiSequence,
+  EmojiThemes,
+  defaultTheme,
+} from './Emojis'
 
 class EmojiRain extends React.Component {
   static defaultProps = {
-    maxDrops: 50,
-    speed: 0.4,
-    tickRate: 250,
+    maxDrops: 200,
+    minFontSize: 40,
+    maxFontSize: 150,
+    speed: 0.3,
   }
 
-  static getRandomNegativeInnerHeight = () =>
-    Math.min(-100, Math.random() * -window.innerHeight)
+  getRandomNegativeInnerHeight = () =>
+    Math.min(-this.props.maxFontSize, Math.random() * -window.innerHeight)
 
-  static getRandomNegativeInnerWidth = () =>
-    Math.min(-100, Math.random() * -window.innerWidth)
+  getRandomNegativeInnerWidth = () =>
+    Math.min(-this.props.maxFontSize, Math.random() * -window.innerWidth)
 
-  constructor(props) {
-    super(props)
-
+  generateDrops = ({
+    minFontSize,
+    maxFontSize,
+    maxDrops,
+    innerHeight,
+    innerWidth,
+    speed,
+    theme,
+  }) => {
     let drops = []
-    for (let i = 0; i < props.maxDrops; i++) {
+    for (let i = 0; i < maxDrops; i++) {
       drops.push({
-        emoji: getRandomEmoji(),
+        fontSize: Math.max(minFontSize, Math.ceil(Math.random() * maxFontSize)),
+        emoji: getRandomEmoji({ theme }),
         position: {
-          x: Math.random() * window.innerWidth,
-          y: EmojiRain.getRandomNegativeInnerHeight(),
+          x: -innerWidth / 2 / 1.5 + Math.random() * innerWidth * 1.5,
+          y: -innerWidth / 2 / 1.5 + Math.random() * innerHeight * 1.5,
         },
         delta: {
-          x: props.speed / 2 - Math.random() * props.speed,
+          x: speed / 2 - Math.random() * speed,
         },
       })
     }
 
+    return drops
+  }
+
+  constructor(props) {
+    super(props)
+
+    const { minFontSize, maxFontSize, maxDrops, speed } = props
+    const { innerWidth, innerHeight } = window
+    const theme = defaultTheme
+
+    const drops = this.generateDrops({
+      minFontSize,
+      maxFontSize,
+      maxDrops,
+      innerHeight,
+      innerWidth,
+      speed,
+      theme,
+    })
+
     this.state = {
       drops,
+      innerHeight,
+      innerWidth,
+      isDarkMode: false,
       lastUpdate: new Date().getTime(),
+      theme,
+      title: `${document.title} ${getRandomEmojiSequence({
+        theme,
+      })}`,
     }
 
-    this.updateInterval = requestAnimationFrame(this.handleUpdate)
+    this.animationFrame = requestAnimationFrame(this.handleUpdate)
+    window.addEventListener('resize', this.throttledResize)
+  }
+
+  toggleDarkMode = () => {
+    this.setState({
+      isDarkMode: !this.state.isDarkMode,
+    })
+  }
+
+  handleResize = () =>
+    this.setState({
+      innerHeight: window.innerHeight,
+      innerWidth: window.innerWidth,
+    })
+  throttledResize = throttle(this.handleResize, 250)
+
+  updatePageTitle = () =>
+    this.setState({
+      title: `${substr(this.state.title, 1)}${getRandomEmoji({
+        theme: this.state.theme,
+      })}`,
+    })
+  throttledUpdatePageTitle = throttle(this.updatePageTitle, 333)
+
+  getUpdatedPosition = ({ for: drop, deltaTime }) => {
+    const { maxFontSize } = this.props
+    const { innerHeight, innerWidth } = this.state
+
+    if (drop.position.x < -maxFontSize) {
+      drop.position.x = innerWidth + maxFontSize
+    } else if (drop.position.x > innerWidth + maxFontSize) {
+      drop.position.x = this.getRandomNegativeInnerWidth()
+    } else {
+      drop.position.x = drop.position.x + drop.delta.x * deltaTime
+    }
+
+    if (drop.position.y > innerHeight + maxFontSize) {
+      drop.position.y = this.getRandomNegativeInnerHeight()
+    } else {
+      drop.position.y = drop.position.y + this.props.speed * deltaTime
+    }
+
+    return drop.position
   }
 
   handleUpdate = () => {
-    requestAnimationFrame(this.handleUpdate)
+    this.animationFrame = requestAnimationFrame(this.handleUpdate)
 
-    const maxFontSize = 100 // TODO: Refactor
     const deltaTime = new Date().getTime() - this.state.lastUpdate
 
-    const updatePosition = drop => {
-      if (drop.position.x < -maxFontSize) {
-        drop.position.x = window.innerWidth + maxFontSize
-      } else if (drop.position.x > window.innerWidth + maxFontSize) {
-        drop.position.x = EmojiRain.getRandomNegativeInnerWidth()
-      } else {
-        drop.position.x = drop.position.x + drop.delta.x * deltaTime
-      }
-
-      if (drop.position.y > window.innerHeight) {
-        drop.position.y = EmojiRain.getRandomNegativeInnerHeight()
-      } else {
-        drop.position.y = drop.position.y + this.props.speed * deltaTime
-      }
-
-      return drop.position
-    }
-
-    const drops = this.state.drops.map((drop, i) => ({
+    const drops = this.state.drops.map(drop => ({
       ...drop,
       emoji: drop.emoji,
-      position: updatePosition(drop),
+      position: this.getUpdatedPosition({ for: drop, deltaTime }),
     }))
+
+    this.throttledUpdatePageTitle()
 
     this.setState({
       drops,
@@ -100,18 +147,64 @@ class EmojiRain extends React.Component {
     })
   }
 
+  handleThemeChange = event => {
+    const theme = EmojiThemes[event.target.value]
+    const { minFontSize, maxFontSize, maxDrops, speed } = this.props
+    const { drops: oldDrops, innerHeight, innerWidth } = this.state
+
+    const drops = this.generateDrops({
+      minFontSize,
+      maxFontSize,
+      maxDrops,
+      innerHeight,
+      innerWidth,
+      speed,
+      theme,
+    })
+
+    for (let i = 0; i < maxDrops; i++) {
+      drops[i].fontSize = oldDrops[i].fontSize
+      drops[i].position = { ...oldDrops[i].position }
+      drops[i].delta = { ...oldDrops[i].delta }
+    }
+
+    this.setState({
+      drops,
+      theme,
+    })
+  }
+
   componentWillUnmount() {
-    cancelAnimationFrame(this.updateInterval)
+    cancelAnimationFrame(this.animationFrame)
+    window.removeEventListener('resize', this.throttledResize)
   }
 
   render() {
+    const {
+      isDarkMode,
+      drops,
+      title,
+      theme,
+      innerWidth,
+      innerHeight,
+    } = this.state
+
     return (
-      <div className="EmojiRain">
-        {this.state.drops.map((drop, i) => (
-          <EmojiRainDrop key={i} emoji={drop.emoji} position={drop.position} />
-        ))}
-        <Footer />
-      </div>
+      <>
+        <Helmet title={title} />
+        <Settings
+          theme={theme}
+          isDarkMode={isDarkMode}
+          toggleDarkMode={this.toggleDarkMode}
+          onThemeChange={this.handleThemeChange}
+        />
+        <EmojiCanvas
+          drops={drops}
+          height={innerHeight}
+          isDarkMode={isDarkMode}
+          width={innerWidth}
+        />
+      </>
     )
   }
 }

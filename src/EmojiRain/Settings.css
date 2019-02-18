@@ -1,0 +1,33 @@
+div.Settings {
+  top: 0;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  position: fixed;
+  width: 100vw;
+  z-index: 2;
+  align-items: center;
+  flex-direction: row;
+}
+
+div.Settings > *:not(:last-child) {
+  margin-right: 20px;
+}
+div.Settings > form,
+div.Settings > form > label > select {
+  font-size: 16px;
+}
+
+div.Settings > form > label {
+  text-shadow: -1px -1px 0px #ffffff, 1px 1px 0px #ffffff, -1px 0px 0px #ffffff,
+    1px 0px 0px #ffffff;
+}
+
+div.Settings > button.toggleDarkMode {
+  touch-action: manipulation;
+  user-select: none;
+}
+
+div.Settings > button.toggleDarkMode:hover {
+  cursor: pointer;
+}
