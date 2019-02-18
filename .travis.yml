@@ -14,3 +14,4 @@ deploy:
   domain: raining-emojis.surge.sh
   on:
     tags: true
+  skip_cleanup: true
