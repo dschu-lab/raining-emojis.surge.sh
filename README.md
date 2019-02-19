@@ -1,4 +1,4 @@
-# [☔️🌈 Raining Emojis](http://raining-emojis.surge.sh) [![Build Status](https://travis-ci.org/dschu-lab/raining-emojis.surge.sh.svg?branch=master)](https://travis-ci.org/dschu-lab/raining-emojis.surge.sh) [![Licence](https://img.shields.io/github/license/dschu-lab/raining-emojis.surge.sh.svg)](https://github.com/dschu-lab/raining-emojis.surge.sh/blob/master/LICENCE) [![Last commit](https://img.shields.io/github/last-commit/dschu-lab/raining-emojis.surge.sh.svg)](https://github.com/dschu-lab/raining-emojis.surge.sh/commits/master)
+# [☔️🌈 Raining Emojis](http://raining-emojis.surge.sh) [![Build Status](https://travis-ci.com/dschu-lab/raining-emojis.surge.sh.svg?branch=master)](https://travis-ci.com/dschu-lab/raining-emojis.surge.sh) [![Licence](https://img.shields.io/github/license/dschu-lab/raining-emojis.surge.sh.svg)](https://github.com/dschu-lab/raining-emojis.surge.sh/blob/master/LICENCE) [![Last commit](https://img.shields.io/github/last-commit/dschu-lab/raining-emojis.surge.sh.svg)](https://github.com/dschu-lab/raining-emojis.surge.sh/commits/master)
 
 ![Raining Emojis Gif](/docs/raining-emojis.gif)
 

@@ -18,6 +18,7 @@ class EmojiRain extends React.Component {
     minFontSize: 40,
     maxFontSize: 150,
     speed: 0.3,
+    theme: defaultTheme,
   }
 
   getRandomNegativeInnerHeight = () =>
@@ -56,9 +57,8 @@ class EmojiRain extends React.Component {
   constructor(props) {
     super(props)
 
-    const { minFontSize, maxFontSize, maxDrops, speed } = props
+    const { minFontSize, maxFontSize, maxDrops, speed, theme } = props
     const { innerWidth, innerHeight } = window
-    const theme = defaultTheme
 
     const drops = this.generateDrops({
       minFontSize,

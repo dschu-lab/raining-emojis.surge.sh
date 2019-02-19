@@ -5,6 +5,7 @@ const EmojiThemes = Object.freeze({
   hipster: Symbol.for('EmojiThemes.hipster'),
   money: Symbol.for('EmojiThemes.money'),
   party: Symbol.for('EmojiThemes.party'),
+  unicorn: Symbol.for('EmojiThemes.unicorn'),
 })
 
 const defaultTheme = EmojiThemes.party
@@ -84,6 +85,10 @@ const Emojis = {
       '🎉',
       '🎊',
     ],
+  },
+  [EmojiThemes.unicorn]: {
+    title: 'Unicorn',
+    emojis: ['🦄', '🌈', '💫', '☁️', '💖'],
   },
 }
 
