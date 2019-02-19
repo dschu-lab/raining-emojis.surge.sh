@@ -11,6 +11,11 @@ import {
   EmojiThemes,
   defaultTheme,
 } from './Emojis'
+import {
+  themeToThemeName,
+  camelCaseToSnakeCase,
+  snakeCaseToCamelCase,
+} from './Helpers'
 
 class EmojiRain extends React.Component {
   static defaultProps = {
@@ -82,14 +87,73 @@ class EmojiRain extends React.Component {
       })}`,
     }
 
-    this.animationFrame = requestAnimationFrame(this.handleUpdate)
+    this.animationFrame = requestAnimationFrame(this.handleAnimationFrame)
     window.addEventListener('resize', this.throttledResize)
   }
 
-  toggleDarkMode = () => {
-    this.setState({
-      isDarkMode: !this.state.isDarkMode,
+  componentWillMount() {
+    const { params } = this.props.match
+    this.updateStateFromProps({
+      background: params.background,
+      themeName: params.theme,
     })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { params } = nextProps.match
+
+    this.updateStateFromProps({
+      background: params.background,
+      themeName: params.theme,
+    })
+  }
+
+  updateStateFromProps = ({ background = 'white', themeName }) => {
+    const { minFontSize, maxFontSize, maxDrops, speed, history } = this.props
+    const { drops: oldDrops, innerHeight, innerWidth } = this.state
+
+    const themeNamesInSnakeCase = Object.keys(EmojiThemes).map(theme =>
+      camelCaseToSnakeCase(theme)
+    )
+
+    if (
+      !themeNamesInSnakeCase.includes(themeName) ||
+      (background !== 'white' && background !== 'black')
+    ) {
+      history.push(`/${themeToThemeName(defaultTheme)}/white`)
+      return
+    }
+
+    const theme = EmojiThemes[snakeCaseToCamelCase(themeName)]
+
+    const drops = this.generateDrops({
+      minFontSize,
+      maxFontSize,
+      maxDrops,
+      innerHeight,
+      innerWidth,
+      speed,
+      theme,
+    })
+
+    for (let i = 0; i < maxDrops; i++) {
+      drops[i].fontSize = oldDrops[i].fontSize
+      drops[i].position = { ...oldDrops[i].position }
+      drops[i].delta = { ...oldDrops[i].delta }
+    }
+
+    this.setState({
+      isDarkMode: background === 'black',
+      drops,
+      theme,
+    })
+  }
+
+  toggleDarkMode = () => {
+    const { history, match } = this.props
+    const background = this.state.isDarkMode ? 'white' : 'black'
+
+    history.push(`/${camelCaseToSnakeCase(match.params.theme)}/${background}`)
   }
 
   handleResize = () =>
@@ -128,8 +192,8 @@ class EmojiRain extends React.Component {
     return drop.position
   }
 
-  handleUpdate = () => {
-    this.animationFrame = requestAnimationFrame(this.handleUpdate)
+  handleAnimationFrame = () => {
+    this.animationFrame = requestAnimationFrame(this.handleAnimationFrame)
 
     const deltaTime = new Date().getTime() - this.state.lastUpdate
 
@@ -148,30 +212,10 @@ class EmojiRain extends React.Component {
   }
 
   handleThemeChange = event => {
-    const theme = EmojiThemes[event.target.value]
-    const { minFontSize, maxFontSize, maxDrops, speed } = this.props
-    const { drops: oldDrops, innerHeight, innerWidth } = this.state
-
-    const drops = this.generateDrops({
-      minFontSize,
-      maxFontSize,
-      maxDrops,
-      innerHeight,
-      innerWidth,
-      speed,
-      theme,
-    })
-
-    for (let i = 0; i < maxDrops; i++) {
-      drops[i].fontSize = oldDrops[i].fontSize
-      drops[i].position = { ...oldDrops[i].position }
-      drops[i].delta = { ...oldDrops[i].delta }
-    }
-
-    this.setState({
-      drops,
-      theme,
-    })
+    const { history } = this.props
+    // TODO: Define white and black somewhere else...It's too WET
+    const background = this.state.isDarkMode ? 'black' : 'white'
+    history.push(`/${camelCaseToSnakeCase(event.target.value)}/${background}`)
   }
 
   componentWillUnmount() {

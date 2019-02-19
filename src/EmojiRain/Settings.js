@@ -1,11 +1,10 @@
 import React from 'react'
 import './Settings.css'
 import Emojis, { EmojiThemes } from './Emojis'
+import { themeToThemeName } from './Helpers'
 
-const ThemeSelection = ({ onThemeChange, theme }) => {
-  // FIXME: This is very hacky and might break in some browsers (untested)
-  let value = theme.toString().split('.')
-  value = value[value.length - 1].replace(')', '')
+const ThemeSelection = ({ onThemeChange, theme = '' }) => {
+  const value = themeToThemeName(theme)
 
   return (
     <form>
