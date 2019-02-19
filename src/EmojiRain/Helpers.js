@@ -5,6 +5,7 @@ const camelCaseToSnakeCase = string => {
 }
 
 const snakeCaseToCamelCase = string => {
+  // eslint-disable-next-line
   return string.replace(/(\-[a-z])/g, function($1) {
     return $1.toUpperCase().replace('-', '')
   })
