@@ -92,6 +92,24 @@ class EmojiRain extends React.Component {
   }
 
   componentWillMount() {
+    const { innerHeight, innerWidth } = window
+    const { innerHeight: currentHeight, innerWidth: currentWidth } = this.state
+
+    console.log({
+      innerHeight,
+      currentHeight,
+      innerWidth,
+      currentWidth,
+    })
+
+    // TODO: Quick hack since react-snaps sets width & height and we need to update this
+    if (innerHeight !== currentHeight || innerWidth !== currentWidth) {
+      this.setState({
+        innerHeight,
+        innerWidth,
+      })
+    }
+
     const { params } = this.props.match
     this.updateStateFromProps({
       background: params.background,

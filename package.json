@@ -10,12 +10,14 @@
     "react-helmet": "^5.2.0",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.5",
+    "react-snap": "^1.23.0",
     "runes": "^0.4.3"
   },
   "scripts": {
     "deploy:surge": "surge ./build raining-emojis.surge.sh",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "postbuild": "react-snap",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "preversion": "[[ -z $(git status --porcelain) ]] && npm run test",

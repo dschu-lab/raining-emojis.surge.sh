@@ -25,19 +25,14 @@ const EmojiCanvas = ({ isDarkMode, drops, height, width }) => {
   if (canvasElement.current) {
     if (!context) {
       setContext(canvasElement.current.getContext('2d'))
-      return
+    } else {
+      canvasElement.current.width = width
+      canvasElement.current.height = height
+      updateContext({ context, isDarkMode, drops, width, height })
     }
-    updateContext({ context, isDarkMode, drops, width, height })
   }
 
-  return (
-    <canvas
-      className="EmojiRainCanvas"
-      ref={canvasElement}
-      width={width}
-      height={height}
-    />
-  )
+  return <canvas className="EmojiRainCanvas" ref={canvasElement} />
 }
 
 export default EmojiCanvas
