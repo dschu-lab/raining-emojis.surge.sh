@@ -144,27 +144,37 @@ class EmojiRain extends React.Component {
 
     const theme = EmojiThemes[snakeCaseToCamelCase(themeName)]
 
-    const drops = this.generateDrops({
-      minFontSize,
-      maxFontSize,
-      maxDrops,
-      innerHeight,
-      innerWidth,
-      speed,
-      theme,
-    })
+    let nextState = {}
+    if (theme !== this.state.theme) {
+      const drops = this.generateDrops({
+        minFontSize,
+        maxFontSize,
+        maxDrops,
+        innerHeight,
+        innerWidth,
+        speed,
+        theme,
+      })
 
-    for (let i = 0; i < maxDrops; i++) {
-      drops[i].fontSize = oldDrops[i].fontSize
-      drops[i].position = { ...oldDrops[i].position }
-      drops[i].delta = { ...oldDrops[i].delta }
+      for (let i = 0; i < maxDrops; i++) {
+        drops[i].fontSize = oldDrops[i].fontSize
+        drops[i].position = { ...oldDrops[i].position }
+        drops[i].delta = { ...oldDrops[i].delta }
+      }
+
+      nextState = {
+        ...nextState,
+        drops,
+      }
     }
 
-    this.setState({
+    nextState = {
+      ...nextState,
       isDarkMode: background === 'black',
-      drops,
       theme,
-    })
+    }
+
+    this.setState(nextState)
   }
 
   toggleDarkMode = () => {

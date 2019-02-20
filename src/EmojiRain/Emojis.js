@@ -1,5 +1,6 @@
 const EmojiThemes = Object.freeze({
-  balloons: Symbol.for('EmojiThemes.balloons'),
+  balloon: Symbol.for('EmojiThemes.balloon'),
+  cat: Symbol.for('EmojiThemes.cat'),
   fastFood: Symbol.for('EmojiThemes.fastFood'),
   german: Symbol.for('EmojiThemes.german'),
   hipster: Symbol.for('EmojiThemes.hipster'),
@@ -10,9 +11,29 @@ const EmojiThemes = Object.freeze({
 
 const defaultTheme = EmojiThemes.party
 const Emojis = {
-  [EmojiThemes.balloons]: {
-    title: 'Balloons',
+  [EmojiThemes.balloon]: {
+    title: 'Balloon',
     emojis: ['🎈'],
+  },
+  [EmojiThemes.cat]: {
+    title: 'Cat',
+    emojis: [
+      '😸',
+      '🐈',
+      '😹',
+      '😺',
+      '😻',
+      '😼',
+      '😼',
+      '😽',
+      '😾',
+      '😿',
+      '🙀',
+      '🐱',
+      '🐅',
+      '🐆',
+      '🧶',
+    ],
   },
   [EmojiThemes.fastFood]: {
     title: 'Fast food',
