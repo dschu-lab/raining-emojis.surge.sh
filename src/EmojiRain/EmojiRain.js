@@ -17,6 +17,8 @@ import {
   snakeCaseToCamelCase,
 } from './Helpers'
 
+const basePageTitle = `☔️🌈 Raining Emojis`
+
 class EmojiRain extends React.Component {
   static defaultProps = {
     maxDrops: 200,
@@ -59,6 +61,13 @@ class EmojiRain extends React.Component {
     return drops
   }
 
+  generatePageTitle = ({ for: theme }) => {
+    return `${basePageTitle} ${getRandomEmojiSequence({
+      length: 2,
+      theme,
+    })}`
+  }
+
   constructor(props) {
     super(props)
 
@@ -82,9 +91,7 @@ class EmojiRain extends React.Component {
       isDarkMode: false,
       lastUpdate: new Date().getTime(),
       theme,
-      title: `${document.title} ${getRandomEmojiSequence({
-        theme,
-      })}`,
+      title: this.generatePageTitle({ for: theme }),
     }
 
     this.animationFrame = requestAnimationFrame(this.handleAnimationFrame)
@@ -158,6 +165,7 @@ class EmojiRain extends React.Component {
       nextState = {
         ...nextState,
         drops,
+        title: this.generatePageTitle({ for: theme }),
       }
     }
 
@@ -183,14 +191,6 @@ class EmojiRain extends React.Component {
       innerWidth: window.innerWidth,
     })
   throttledResize = throttle(this.handleResize, 250)
-
-  updatePageTitle = () =>
-    this.setState({
-      title: `${substr(this.state.title, 1)}${getRandomEmoji({
-        theme: this.state.theme,
-      })}`,
-    })
-  throttledUpdatePageTitle = throttle(this.updatePageTitle, 333)
 
   getUpdatedPosition = ({ for: drop, deltaTime }) => {
     const { maxFontSize } = this.props
@@ -223,8 +223,6 @@ class EmojiRain extends React.Component {
       emoji: drop.emoji,
       position: this.getUpdatedPosition({ for: drop, deltaTime }),
     }))
-
-    this.throttledUpdatePageTitle()
 
     this.setState({
       drops,
