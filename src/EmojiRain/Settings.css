@@ -13,14 +13,13 @@ div.Settings {
 div.Settings > *:not(:last-child) {
   margin-right: 20px;
 }
-div.Settings > form,
-div.Settings > form > label > select {
+div.Settings > label > select {
   font-size: 16px;
 }
 
-div.Settings > form > label {
-  text-shadow: -1px -1px 0px #ffffff, 1px 1px 0px #ffffff, -1px 0px 0px #ffffff,
-    1px 0px 0px #ffffff;
+div.Settings > label {
+  text-shadow: 0px -1px 0px #ffffff, 0px 1px 0px #ffffff, -1px 0px 0px #ffffff,
+    1px 0px 0px #ffffff, -1px -1px 0px #ffffff, 1px 1px 0px #ffffff;
 }
 
 div.Settings > button.toggleDarkMode {

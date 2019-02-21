@@ -7,18 +7,16 @@ const ThemeSelection = ({ onThemeChange, theme = '' }) => {
   const value = themeToThemeName(theme)
 
   return (
-    <form>
-      <label>
-        {'Theme '}
-        <select id="themeSelection" onChange={onThemeChange} value={value}>
-          {Object.keys(EmojiThemes).map(theme => (
-            <option key={theme} value={theme}>
-              {Emojis[EmojiThemes[theme]].title}
-            </option>
-          ))}
-        </select>
-      </label>
-    </form>
+    <label>
+      {'Theme '}
+      <select id="themeSelection" onChange={onThemeChange} value={value}>
+        {Object.keys(EmojiThemes).map(theme => (
+          <option key={theme} value={theme}>
+            {Emojis[EmojiThemes[theme]].title}
+          </option>
+        ))}
+      </select>
+    </label>
   )
 }
 
@@ -38,7 +36,32 @@ const ToggleDarkModeButton = ({ isDarkMode, toggleDarkMode }) => {
   )
 }
 
-const Settings = ({ isDarkMode, toggleDarkMode, onThemeChange, theme }) => {
+const SpeedSelection = ({ min = 0, max = 5, step = 0.01, onChange, value }) => {
+  return (
+    <label>
+      {'🐢'}
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        onChange={onChange}
+        value={value}
+      />
+      {'🐇'}
+    </label>
+  )
+}
+
+// FIXME: Prop drilling is meh... Create one context to rule 'em all!
+const Settings = ({
+  isDarkMode,
+  toggleDarkMode,
+  onThemeChange,
+  speed,
+  onSpeedChange,
+  theme,
+}) => {
   return (
     <div className="Settings">
       <ThemeSelection onThemeChange={onThemeChange} theme={theme} />
@@ -46,6 +69,7 @@ const Settings = ({ isDarkMode, toggleDarkMode, onThemeChange, theme }) => {
         isDarkMode={isDarkMode}
         toggleDarkMode={toggleDarkMode}
       />
+      <SpeedSelection value={speed} onChange={onSpeedChange} />
     </div>
   )
 }

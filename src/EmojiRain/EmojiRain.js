@@ -1,6 +1,5 @@
 import React from 'react'
 import Helmet from 'react-helmet'
-import { substr } from 'runes'
 import { throttle } from 'lodash'
 import './EmojiRain.css'
 import EmojiCanvas from './EmojiCanvas'
@@ -24,7 +23,6 @@ class EmojiRain extends React.Component {
     maxDrops: 200,
     minFontSize: 40,
     maxFontSize: 150,
-    speed: 0.3,
     theme: defaultTheme,
   }
 
@@ -71,9 +69,10 @@ class EmojiRain extends React.Component {
   constructor(props) {
     super(props)
 
-    const { minFontSize, maxFontSize, maxDrops, speed, theme } = props
+    const { minFontSize, maxFontSize, maxDrops, theme } = props
     const { innerWidth, innerHeight } = window
 
+    const speed = 0.3
     const drops = this.generateDrops({
       minFontSize,
       maxFontSize,
@@ -90,6 +89,7 @@ class EmojiRain extends React.Component {
       innerWidth,
       isDarkMode: false,
       lastUpdate: new Date().getTime(),
+      speed,
       theme,
       title: this.generatePageTitle({ for: theme }),
     }
@@ -102,7 +102,6 @@ class EmojiRain extends React.Component {
     const { innerHeight, innerWidth } = window
     const { innerHeight: currentHeight, innerWidth: currentWidth } = this.state
 
-    // TODO: Quick hack since react-snaps sets width & height and we need to update this
     if (innerHeight !== currentHeight || innerWidth !== currentWidth) {
       this.setState({
         innerHeight,
@@ -127,8 +126,8 @@ class EmojiRain extends React.Component {
   }
 
   updateStateFromProps = ({ background = 'white', themeName }) => {
-    const { minFontSize, maxFontSize, maxDrops, speed, history } = this.props
-    const { drops: oldDrops, innerHeight, innerWidth } = this.state
+    const { minFontSize, maxFontSize, maxDrops, history } = this.props
+    const { drops: oldDrops, innerHeight, innerWidth, speed } = this.state
 
     const themeNamesInSnakeCase = Object.keys(EmojiThemes).map(theme =>
       camelCaseToSnakeCase(theme)
@@ -194,20 +193,20 @@ class EmojiRain extends React.Component {
 
   getUpdatedPosition = ({ for: drop, deltaTime }) => {
     const { maxFontSize } = this.props
-    const { innerHeight, innerWidth } = this.state
+    const { innerHeight, innerWidth, speed } = this.state
 
     if (drop.position.x < -maxFontSize) {
       drop.position.x = innerWidth + maxFontSize
     } else if (drop.position.x > innerWidth + maxFontSize) {
       drop.position.x = this.getRandomNegativeInnerWidth()
     } else {
-      drop.position.x = drop.position.x + drop.delta.x * deltaTime
+      drop.position.x = drop.position.x + drop.delta.x * speed * deltaTime
     }
 
     if (drop.position.y > innerHeight + maxFontSize) {
       drop.position.y = this.getRandomNegativeInnerHeight()
     } else {
-      drop.position.y = drop.position.y + this.props.speed * deltaTime
+      drop.position.y = drop.position.y + speed * deltaTime
     }
 
     return drop.position
@@ -237,6 +236,12 @@ class EmojiRain extends React.Component {
     history.push(`/${camelCaseToSnakeCase(event.target.value)}/${background}`)
   }
 
+  handleSpeedChange = event => {
+    this.setState({
+      speed: event.target.value,
+    })
+  }
+
   componentWillUnmount() {
     cancelAnimationFrame(this.animationFrame)
     window.removeEventListener('resize', this.throttledResize)
@@ -244,12 +249,13 @@ class EmojiRain extends React.Component {
 
   render() {
     const {
-      isDarkMode,
       drops,
-      title,
-      theme,
-      innerWidth,
       innerHeight,
+      innerWidth,
+      isDarkMode,
+      speed,
+      theme,
+      title,
     } = this.state
 
     return (
@@ -260,6 +266,8 @@ class EmojiRain extends React.Component {
           isDarkMode={isDarkMode}
           toggleDarkMode={this.toggleDarkMode}
           onThemeChange={this.handleThemeChange}
+          speed={speed}
+          onSpeedChange={this.handleSpeedChange}
         />
         <EmojiCanvas
           drops={drops}

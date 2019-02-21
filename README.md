@@ -10,6 +10,7 @@ Visit [http://raining-emojis.surge.sh](http://raining-emojis.surge.sh) and chill
 
 🎭 Themes  
 🌓 Dark mode  
+🕹 Customizable speed
 ⚡️ Dynamic routes so you can share your favorite theme  
 🖼 Utilizes the [canvas element](https://developer.mozilla.org/de/docs/Web/HTML/Element/canvas) to draw emojis on  
 🚀 Hosted on [surge.sh](https://surge.sh)
@@ -18,7 +19,7 @@ Visit [http://raining-emojis.surge.sh](http://raining-emojis.surge.sh) and chill
 
 🔊 Background music  
 🔌 Offline version  
-🕹 Customizable speed & amount of emojis  
+🕹 Customizable amount of emojis  
 ✨ Visual effects  
 💾 Persist user settings to [localStorage](https://developer.mozilla.org/de/docs/Web/API/Window/localStorage)  
 💖 Twemoji fallback
