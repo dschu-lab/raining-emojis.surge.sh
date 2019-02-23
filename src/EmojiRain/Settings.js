@@ -3,42 +3,47 @@ import './Settings.css'
 import Emojis, { EmojiThemes } from './Emojis'
 import { themeToThemeName } from './Helpers'
 
-const ThemeSelection = ({ onThemeChange, theme = '' }) => {
-  const value = themeToThemeName(theme)
-
-  return (
-    <label>
-      {'Theme '}
-      <select id="themeSelection" onChange={onThemeChange} value={value}>
-        {Object.keys(EmojiThemes).map(theme => (
-          <option key={theme} value={theme}>
-            {Emojis[EmojiThemes[theme]].title}
-          </option>
-        ))}
-      </select>
-    </label>
-  )
+const Button = ({ children, ...rest }) => {
+  return <button {...rest}>{children}</button>
 }
 
+const ThemeSelection = ({ onThemeChange, theme = '' }) => (
+  <label aria-label="Select your theme">
+    {'🎨'}
+    <select
+      id="themeSelection"
+      onChange={onThemeChange}
+      value={themeToThemeName(theme)}
+    >
+      {Object.keys(EmojiThemes).map(theme => (
+        <option key={theme} value={theme}>
+          {Emojis[EmojiThemes[theme]].title}
+        </option>
+      ))}
+    </select>
+  </label>
+)
+
 const ToggleDarkModeButton = ({ isDarkMode, toggleDarkMode }) => {
-  const text = 'Background'
-  const buttonText = isDarkMode ? `${text} 🌑` : `${text} 🌕`
-  const buttonTitle = 'Toggle dark mode'
+  const baseText = 'Background'
+  const text = isDarkMode ? `${baseText} 🌑` : `${baseText} 🌕`
+  const title = 'Toggle dark mode'
+
   return (
-    <button
-      children={buttonText}
+    <Button
+      children={text}
       className="toggleDarkMode"
       onClick={toggleDarkMode}
       role="img"
-      aria-label={buttonTitle}
-      title={buttonTitle}
+      aria-label={title}
+      title={title}
     />
   )
 }
 
-const SpeedSelection = ({ min = 0, max = 5, step = 0.01, onChange, value }) => {
+const SpeedSelection = ({ min = 0, max = 2, step = 0.01, onChange, value }) => {
   return (
-    <label>
+    <label aria-label="Select">
       {'🐢'}
       <input
         type="range"
@@ -54,15 +59,15 @@ const SpeedSelection = ({ min = 0, max = 5, step = 0.01, onChange, value }) => {
 }
 
 // FIXME: Prop drilling is meh... Create one context to rule 'em all!
-const Settings = ({
-  isDarkMode,
-  toggleDarkMode,
-  onThemeChange,
-  speed,
-  onSpeedChange,
-  theme,
-}) => {
-  return (
+const Settings = React.memo(
+  ({
+    isDarkMode,
+    toggleDarkMode,
+    onThemeChange,
+    speed,
+    onSpeedChange,
+    theme,
+  }) => (
     <div className="Settings">
       <ThemeSelection onThemeChange={onThemeChange} theme={theme} />
       <ToggleDarkModeButton
@@ -72,6 +77,6 @@ const Settings = ({
       <SpeedSelection value={speed} onChange={onSpeedChange} />
     </div>
   )
-}
+)
 
 export default Settings
